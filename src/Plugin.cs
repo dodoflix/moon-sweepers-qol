@@ -1,0 +1,68 @@
+using System;
+using BepInEx;
+using BepInEx.Configuration;
+using BepInEx.Unity.IL2CPP;
+using HarmonyLib;
+using Il2CppInterop.Runtime.Injection;
+using UnityEngine;
+
+namespace MoonSweepersQol;
+
+[BepInPlugin(Guid, "Moon Sweepers QoL", Version)]
+public class Plugin : BasePlugin
+{
+    // scripts/package.sh reads Version from here.
+    public const string Guid = "dodo.moonsweepers.qol";
+    public const string Version = "0.7.0";
+
+    public static Plugin Instance;
+    public static ConfigEntry<bool> RequireUpgrade;
+
+    public override void Load()
+    {
+        Instance = this;
+        RequireUpgrade = Config.Bind("General", "RequireUpgrade", true,
+            "Features that are sold as upgrades only work once bought. Set to false to have them always on.");
+        Harmony.CreateAndPatchAll(typeof(FlagUnderPatch));
+        Harmony.CreateAndPatchAll(typeof(ShowInfoPatch));
+        ClassInjector.RegisterTypeInIl2Cpp<Qol>();
+        AddComponent<Qol>();
+        Log.LogInfo("loaded");
+        try { Upgrades.Register(); }
+        catch (Exception e) { Log.LogWarning($"early upgrade registration failed, retrying in game: {e.Message}"); }
+    }
+}
+
+// Drives every feature from one component: a slow scan for game objects, plus per-frame work.
+public class Qol : MonoBehaviour
+{
+    float nextScan;
+
+    public Qol(IntPtr ptr) : base(ptr) { }
+
+    void Update()
+    {
+        if (Time.unscaledTime < nextScan) return;
+        nextScan = Time.unscaledTime + 1f;
+        try
+        {
+            Game.Refresh();
+            Upgrades.Register();
+            Landmarks.Scan();
+            Hologram.Scan();
+        }
+        catch (Exception e) { Plugin.Instance.Log.LogError(e); }
+    }
+
+    void LateUpdate()
+    {
+        try { Landmarks.LateUpdate(); MapMarks.LateUpdate(); Hologram.LateUpdate(); }
+        catch (Exception e) { Plugin.Instance.Log.LogError(e); }
+    }
+
+    void OnGUI()
+    {
+        var e = Event.current;
+        if (e.type == EventType.KeyDown && e.keyCode == KeyCode.F8) Landmarks.Show = !Landmarks.Show;
+    }
+}

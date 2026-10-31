@@ -1,0 +1,9 @@
+bin/
+obj/
+
+# built by scripts/package.sh
+dist/
+
+# editor
+.idea/
+*.DotSettings.user

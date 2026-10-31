@@ -1,0 +1,61 @@
+name: Nexus
+
+# The plugin is compiled against interop assemblies generated from the player's own copy
+# of the game, which a runner does not have. So the zip is built locally by
+# scripts/release.sh and attached to a GitHub release; this takes it from there.
+# workflow_dispatch re-runs a release that already exists, for a failed upload.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to upload
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  nexus:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ inputs.tag || github.event.release.tag_name }}
+    steps:
+      - name: Check the Nexus settings
+        id: settings
+        env:
+          NEXUSMODS_API_KEY: ${{ secrets.NEXUSMODS_API_KEY }}
+        run: |
+          if [ -z "$NEXUSMODS_API_KEY" ] || [ -z "${{ vars.NEXUS_FILE_ID }}" ] || [ -z "${{ vars.NEXUS_MOD_ID }}" ]; then
+            echo "NEXUSMODS_API_KEY, NEXUS_FILE_ID or NEXUS_MOD_ID is not set - skipping the Nexus upload." >&2
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch the release
+        if: steps.settings.outputs.ready == 'true'
+        id: release
+        run: |
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern '*.zip' --dir dist
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+          {
+            echo 'notes<<CHANGELOG_EOF'
+            gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body
+            echo 'CHANGELOG_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload to Nexus Mods
+        if: steps.settings.outputs.ready == 'true'
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.11
+        with:
+          api_key: ${{ secrets.NEXUSMODS_API_KEY }}
+          file_id: ${{ vars.NEXUS_FILE_ID }}
+          mod_id: ${{ vars.NEXUS_MOD_ID }}
+          filename: dist/MoonSweepersQol-${{ steps.release.outputs.version }}.zip
+          version: ${{ steps.release.outputs.version }}
+          changelog: ${{ steps.release.outputs.notes }}
+          archive_existing_version: 'true'
+          update_mod_version: 'true'
