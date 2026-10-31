@@ -56,6 +56,7 @@ public class Qol : MonoBehaviour
             Landmarks.Scan();
             Hologram.Scan();
             Machines.Apply();
+            Robots.Apply();
         }
         catch (Exception e) { Plugin.Instance.Log.LogError(e); }
     }

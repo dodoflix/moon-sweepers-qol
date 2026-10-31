@@ -18,6 +18,8 @@ Raised ones are left to the game, which already draws them.
 **Belt Drive** (Logistics, needs Rapid Transfer) speeds up conveyor belts, up to +60%.
 **Machine Overdrive** (Logistics, needs Belt Drive) speeds up stone presses and pressure
 chambers, up to +75%. They draw proportionally more power, so energy per product stays the same.
+**Robot Drive** (Cleaning, needs Long Reach) makes robot vacuums travel and clean faster, up to
++60% travelling and about +45% cleaning, on and off screen.
 
 ## Install
 

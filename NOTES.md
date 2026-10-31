@@ -70,6 +70,14 @@ later is not shown.
 - Touching the world's tuning while `MoonWorld.Initialize` runs crashes the game. `Game.Ready` waits 20 s
   after the walker appears, and nothing is written at level 0.
 
+## Robots
+
+- Robots near the player are `MoonRobotVacuum` objects. `cleaningSpeed`, `travelSpeed` and `acceleration` are plain
+  fields, written per robot as multiples of the values seen when the robot first appears. Joonas ignores
+  `cleaningSpeed` while it sweeps: its pad strokes and speed follow `launcher.motionRate`, so that is scaled
+  too. Cleaning then tops out around 2.2 against the 1.6 it peaked at before, short of the full multiple.
+- Robots away from the player are simulated from `MoonWorld.FarSpec(kind).rate`, one spec per dock kind.
+
 ## Nexus
 
 The upload goes through [`Nexus-Mods/upload-action`](https://github.com/Nexus-Mods/upload-action) (v3 API, still in beta).

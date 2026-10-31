@@ -12,15 +12,17 @@ static class Upgrades
     public const string LandmarkScanner = "qol.landmark-scanner";
     public const string BeltDrive = "qol.belt-drive";
     public const string MachineOverdrive = "qol.machine-overdrive";
+    public const string RobotDrive = "qol.robot-drive";
 
     static bool registered;
-    static int scannerLevel, beltLevel, machineLevel;
+    static int scannerLevel, beltLevel, machineLevel, robotLevel;
 
     // Whether landmarks are marked on the compass and map.
     public static bool ScannerOn => !Plugin.RequireUpgrade.Value || scannerLevel > 0;
 
     // Bought levels, or the top level when upgrades are not required.
     public static int BeltLevel => Plugin.RequireUpgrade.Value ? beltLevel : Machines.BeltBoost.Length - 1;
+    public static int RobotLevel => Plugin.RequireUpgrade.Value ? robotLevel : Robots.Boost.Length - 1;
     public static int MachineLevel => Plugin.RequireUpgrade.Value ? machineLevel : Machines.MachineBoost.Length - 1;
 
     public static void Register()
@@ -31,6 +33,7 @@ static class Upgrades
             scannerLevel = Game.World.TreeLevel(me, LandmarkScanner);
             beltLevel = Game.World.TreeLevel(me, BeltDrive);
             machineLevel = Game.World.TreeLevel(me, MachineOverdrive);
+            robotLevel = Game.World.TreeLevel(me, RobotDrive);
         }
         if (registered) return;
         var nodes = MoonUpgradeTree.Nodes;
@@ -48,6 +51,9 @@ static class Upgrades
             Make(MachineOverdrive, "Machine Overdrive", "Presses and pressure chambers cycle faster. They draw proportionally more power, so the energy per product stays the same.",
                 MoonUpgradeTree.Branch.Logistics, MoonUpgradeTree.Glyph.Turbo, new[] { 300, 900, 2400 }, (BeltDrive, 1), new Vector2(-445f, -400f),
                 level => $"+{Percent(Machines.MachineBoost, level)}% machine speed"),
+            Make(RobotDrive, "Robot Drive", "Tuned drive trains for robot vacuums. They clean and travel faster, on and off screen.",
+                MoonUpgradeTree.Branch.Cleaning, MoonUpgradeTree.Glyph.Suction, new[] { 250, 700, 1800 }, ("clean.reach", 1), new Vector2(330f, 360f),
+                level => $"+{Percent(Robots.Boost, level)}% robot speed"),
         };
 
         var all = new Il2CppReferenceArray<MoonUpgradeTree.Node>(nodes.Length + added.Length);
@@ -59,7 +65,7 @@ static class Upgrades
         Plugin.Instance.Log.LogInfo($"registered {added.Length} upgrades, Find: {MoonUpgradeTree.Find(BeltDrive) != null}");
     }
 
-    static int Percent(float[] boosts, int level) => Mathf.RoundToInt((boosts[Mathf.Clamp(level, 0, boosts.Length - 1)] - 1f) * 100f);
+    public static int Percent(float[] boosts, int level) => Mathf.RoundToInt((boosts[Mathf.Clamp(level, 0, boosts.Length - 1)] - 1f) * 100f);
 
     static MoonUpgradeTree.Node Make(string id, string title, string summary, MoonUpgradeTree.Branch branch, MoonUpgradeTree.Glyph glyph,
         int[] prices, (string id, int level) needs, Vector2 position, System.Func<int, string> effect) => new()
