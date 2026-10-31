@@ -66,11 +66,11 @@ The upload goes through [`Nexus-Mods/upload-action`](https://github.com/Nexus-Mo
 1. Upload the first version by hand on the mod page, so there is a file to add versions to.
 2. Create an API key in your Nexus account settings and save it as the repository secret `NEXUSMODS_API_KEY`.
 3. Save the file's ID (Files tab, "Advanced") as the repository variable `NEXUS_FILE_ID`, and the mod's
-   ID as `NEXUS_MOD_ID`.
+   "Unique Mod ID" from the same dialog as `NEXUS_MOD_ID`. The API rejects the number in the page URL
+   with "Mod not found".
 
 Until all three exist the workflow skips the upload instead of failing.
 
 The page text comes from `assets/nexus-description.bbcode` and the summary in `scripts/nexus-page.sh`,
-pushed with `PATCH /v3/mods/{id}` on every tag. That endpoint takes the mod's unique id, which the script
-looks up from the page number. The API has no image or tag endpoints, so the header, gallery and tags
+pushed with `PATCH /v3/mods/{id}` on every tag. The API has no image or tag endpoints, so the header, gallery and tags
 are set by hand; `assets/make-logo.py` draws the image used there.
