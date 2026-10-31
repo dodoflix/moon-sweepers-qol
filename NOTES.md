@@ -94,5 +94,7 @@ The upload goes through [`Nexus-Mods/upload-action`](https://github.com/Nexus-Mo
 Until all three exist the workflow skips the upload instead of failing.
 
 The page text comes from `assets/nexus-description.bbcode` and `assets/nexus-summary.txt`,
-pushed with `PATCH /v3/mods/{id}` on every tag. The API has no image or tag endpoints, so the header, gallery and tags
-are set by hand; `assets/make-logo.py` draws the image used there.
+pushed with `PATCH /v3/mods/{id}` on every tag. The API has no image or tag endpoints (POST to
+`/mods/{id}/images`, `/media`, `/gallery` and `/header` all 404, where `/changelogs` answers 422), so the header,
+gallery and tags are set by hand. `assets/make-logo.py` draws both images: `logo.png` for the thumbnail and
+gallery, `banner.png` for the header.

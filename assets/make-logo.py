@@ -162,11 +162,8 @@ def banner():
     img = background(bw, bh, keep=(40, 60, bw - 40, 300))
     d = ImageDraw.Draw(img)
 
-    spaced(d, 355, 96, "MOON SWEEPERS", font(24, False), DIM, 12)
-    spaced(d, 355, 128, "QUALITY OF LIFE", font(66, True), TEXT, 4)
-    d.line([(100 * S, 232 * S), (320 * S, 232 * S)], fill=MINT, width=2 * S)
-    d.line([(390 * S, 232 * S), (610 * S, 232 * S)], fill=MINT, width=2 * S)
-    d.polygon([(355 * S, 222 * S), (365 * S, 232 * S), (355 * S, 242 * S), (345 * S, 232 * S)], fill=AMBER)
+    spaced(d, 355, 119, "MOON SWEEPERS", font(24, False), DIM, 12)
+    spaced(d, 355, 151, "QUALITY OF LIFE", font(66, True), TEXT, 4)
 
     size, gap = 124, 18
     x0 = bw - 40 - (4 * size + 3 * gap)
