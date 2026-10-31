@@ -19,7 +19,8 @@ Raised ones are left to the game, which already draws them.
 **Machine Overdrive** (Logistics, needs Belt Drive) speeds up stone presses and pressure
 chambers, up to +75%. They draw proportionally more power, so energy per product stays the same.
 **Robot Drive** (Cleaning, needs Long Reach) makes robot vacuums travel and clean faster, up to
-+60% travelling and about +45% cleaning, on and off screen.
++60%, on and off screen.
+**Robot Heads** (Cleaning, needs Robot Drive) widens what they cover, up to +45%.
 
 ## Install
 

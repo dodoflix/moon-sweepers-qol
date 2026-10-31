@@ -13,9 +13,10 @@ static class Upgrades
     public const string BeltDrive = "qol.belt-drive";
     public const string MachineOverdrive = "qol.machine-overdrive";
     public const string RobotDrive = "qol.robot-drive";
+    public const string RobotHeads = "qol.robot-heads";
 
     static bool registered;
-    static int scannerLevel, beltLevel, machineLevel, robotLevel;
+    static int scannerLevel, beltLevel, machineLevel, robotLevel, robotWidthLevel;
 
     // Whether landmarks are marked on the compass and map.
     public static bool ScannerOn => !Plugin.RequireUpgrade.Value || scannerLevel > 0;
@@ -23,6 +24,7 @@ static class Upgrades
     // Bought levels, or the top level when upgrades are not required.
     public static int BeltLevel => Plugin.RequireUpgrade.Value ? beltLevel : Machines.BeltBoost.Length - 1;
     public static int RobotLevel => Plugin.RequireUpgrade.Value ? robotLevel : Robots.Boost.Length - 1;
+    public static int RobotWidthLevel => Plugin.RequireUpgrade.Value ? robotWidthLevel : Robots.WidthBoost.Length - 1;
     public static int MachineLevel => Plugin.RequireUpgrade.Value ? machineLevel : Machines.MachineBoost.Length - 1;
 
     public static void Register()
@@ -34,6 +36,7 @@ static class Upgrades
             beltLevel = Game.World.TreeLevel(me, BeltDrive);
             machineLevel = Game.World.TreeLevel(me, MachineOverdrive);
             robotLevel = Game.World.TreeLevel(me, RobotDrive);
+            robotWidthLevel = Game.World.TreeLevel(me, RobotHeads);
         }
         if (registered) return;
         var nodes = MoonUpgradeTree.Nodes;
@@ -54,6 +57,9 @@ static class Upgrades
             Make(RobotDrive, "Robot Drive", "Tuned drive trains for robot vacuums. They clean and travel faster, on and off screen.",
                 MoonUpgradeTree.Branch.Cleaning, MoonUpgradeTree.Glyph.Suction, new[] { 250, 700, 1800 }, ("clean.reach", 1), new Vector2(330f, 360f),
                 level => $"+{Percent(Robots.Boost, level)}% robot speed"),
+            Make(RobotHeads, "Robot Heads", "Wider sweep heads for robot vacuums. Each pass covers more ground, on and off screen.",
+                MoonUpgradeTree.Branch.Cleaning, MoonUpgradeTree.Glyph.Width, new[] { 300, 850, 2200 }, (RobotDrive, 1), new Vector2(480f, 400f),
+                level => $"+{Percent(Robots.WidthBoost, level)}% robot sweep width"),
         };
 
         var all = new Il2CppReferenceArray<MoonUpgradeTree.Node>(nodes.Length + added.Length);

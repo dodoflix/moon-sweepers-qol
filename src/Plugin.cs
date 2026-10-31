@@ -28,6 +28,7 @@ public class Plugin : BasePlugin
             "Machines sped up by Machine Overdrive draw proportionally more power. Set to false to keep their power draw.");
         Harmony.CreateAndPatchAll(typeof(FlagUnderPatch));
         Harmony.CreateAndPatchAll(typeof(ShowInfoPatch));
+        Harmony.CreateAndPatchAll(typeof(RobotDrivePatch));
         Harmony.CreateAndPatchAll(typeof(StepConveyorsPatch));
         Harmony.CreateAndPatchAll(typeof(BeltSurfaceVelocityPatch));
         ClassInjector.RegisterTypeInIl2Cpp<Qol>();

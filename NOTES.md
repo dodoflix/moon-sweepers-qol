@@ -72,10 +72,13 @@ later is not shown.
 
 ## Robots
 
-- Robots near the player are `MoonRobotVacuum` objects. `cleaningSpeed`, `travelSpeed` and `acceleration` are plain
-  fields, written per robot as multiples of the values seen when the robot first appears. Joonas ignores
-  `cleaningSpeed` while it sweeps: its pad strokes and speed follow `launcher.motionRate`, so that is scaled
-  too. Cleaning then tops out around 2.2 against the 1.6 it peaked at before, short of the full multiple.
+- Robots near the player are `MoonRobotVacuum` objects. `cleaningSpeed`, `travelSpeed`, `acceleration` and
+  `cleaningWidth` are plain fields, written per robot as multiples of the values seen when the robot first appears.
+- Joonas sweeps with pads, so those fields barely matter to it. Its pad strokes and speed follow
+  `launcher.motionRate`, which is scaled instead, and its coverage is the pad radius `launcher.padSize`.
+  `MoonJoonasMotion.coveredHalfWidth` looks like the width but changes nothing visible.
+- `MoonRobotVacuum.Drive` clamps Joonas's speed to 2.2 while sweeping, whatever `maxSpeed` it is given. A
+  Harmony patch learns the clamp from the speed reached and scales the step time by the shortfall.
 - Robots away from the player are simulated from `MoonWorld.FarSpec(kind).rate`, one spec per dock kind.
 
 ## Nexus
