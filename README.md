@@ -31,20 +31,23 @@ have everything on without buying it.
 
 ## Releasing
 
+Tagging is the trigger:
+
 ```sh
-git commit ...
-./scripts/release.sh "what changed"
+./scripts/check.sh
+git tag -a v1.0.0 -m "what changed"   # must match Version in src/Plugin.cs
+git push origin v1.0.0
 ```
 
-That builds the zip, tags the version in `src/Plugin.cs`, and publishes a GitHub release.
-Publishing the release triggers the workflow that uploads it to Nexus Mods. It needs the
-`NEXUSMODS_API_KEY` secret and the `NEXUS_FILE_ID` and `NEXUS_MOD_ID` variables
-(see [NOTES.md](NOTES.md#nexus)).
+That builds the zip on a runner, attaches it to a GitHub release, and uploads it to Nexus
+Mods. The tag message becomes the changelog. Needs the `NEXUSMODS_API_KEY` secret and the
+`NEXUS_FILE_ID` and `NEXUS_MOD_ID` variables (see [NOTES.md](NOTES.md#nexus)).
 
 ## Development
 
 `scripts/check.sh` compiles against the interop assemblies BepInEx generated from your copy
-of the game, so it only runs where the game is installed.
+of the game, or against the signature-only copies in `refs/` when there is no game, which is
+how CI builds. Run `scripts/refs.sh` after a game update to refresh them.
 
 To add a feature, write a static class beside `Landmarks.cs` and call it from `Qol` in
 `src/Plugin.cs`. Sell it with a node in `src/Upgrades.cs`.

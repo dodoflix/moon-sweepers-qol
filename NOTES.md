@@ -10,7 +10,15 @@ How the mod works, and what it cost to find out. The README is the short version
   the live runtime and generates `BepInEx/interop/*.dll`. Swapping parser libraries by hand did not work.
 - Under Proton the doorstop `winhttp.dll` proxy only loads with a Wine DLL override
   (`winhttp=native,builtin`), set either as a Steam launch option or in the prefix `user.reg`.
-- `scripts/check.sh` needs `BepInEx/interop`, so the game has to have run once with the patcher.
+- `scripts/refs.sh` and a local `check.sh` build need `BepInEx/interop`, so the game has to have run once with the patcher.
+
+## CI builds from refs/
+
+A runner has no game, and the interop assemblies are generated from the player's own copy, so they cannot
+be fetched. `refs/` holds signature-only copies (made with JetBrains Refasmer) of the BepInEx core libraries and
+the interop assemblies the plugin uses; the csproj falls back to them when the game is not there. Refasmer fails
+on `UnityEngine.CoreModule` with "Read out of bounds" unless private members are kept, which `refs.sh` handles.
+Regenerate after a game update that changes a type the plugin uses.
 
 ## IL2CPP traps
 

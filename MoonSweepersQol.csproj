@@ -8,11 +8,14 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GameDir Condition="'$(GameDir)' == ''">$(HOME)/.local/share/Steam/steamapps/common/Moon Sweepers</GameDir>
+    <!-- Your game's generated assemblies when present, else the signature-only copies in refs/ (CI). -->
+    <RefRoot Condition="Exists('$(GameDir)/BepInEx/interop')">$(GameDir)/BepInEx</RefRoot>
+    <RefRoot Condition="'$(RefRoot)' == ''">$(MSBuildThisFileDirectory)refs</RefRoot>
   </PropertyGroup>
 
   <ItemGroup>
-    <GameRef Include="$(GameDir)/BepInEx/core/BepInEx.Core.dll;$(GameDir)/BepInEx/core/BepInEx.Unity.IL2CPP.dll;$(GameDir)/BepInEx/core/0Harmony.dll;$(GameDir)/BepInEx/core/Il2CppInterop.Runtime.dll;$(GameDir)/BepInEx/core/Il2CppInterop.Common.dll" />
-    <GameRef Include="$(GameDir)/BepInEx/interop/Assembly-CSharp.dll;$(GameDir)/BepInEx/interop/Il2Cppmscorlib.dll;$(GameDir)/BepInEx/interop/UnityEngine.dll;$(GameDir)/BepInEx/interop/UnityEngine.CoreModule.dll;$(GameDir)/BepInEx/interop/UnityEngine.IMGUIModule.dll;$(GameDir)/BepInEx/interop/UnityEngine.TextRenderingModule.dll;$(GameDir)/BepInEx/interop/UnityEngine.UI.dll;$(GameDir)/BepInEx/interop/UnityEngine.UIModule.dll;$(GameDir)/BepInEx/interop/UnityEngine.PhysicsModule.dll;$(GameDir)/BepInEx/interop/Unity.TextMeshPro.dll" />
+    <GameRef Include="$(RefRoot)/core/BepInEx.Core.dll;$(RefRoot)/core/BepInEx.Unity.IL2CPP.dll;$(RefRoot)/core/0Harmony.dll;$(RefRoot)/core/Il2CppInterop.Runtime.dll;$(RefRoot)/core/Il2CppInterop.Common.dll" />
+    <GameRef Include="$(RefRoot)/interop/Assembly-CSharp.dll;$(RefRoot)/interop/Il2Cppmscorlib.dll;$(RefRoot)/interop/UnityEngine.dll;$(RefRoot)/interop/UnityEngine.CoreModule.dll;$(RefRoot)/interop/UnityEngine.IMGUIModule.dll;$(RefRoot)/interop/UnityEngine.TextRenderingModule.dll;$(RefRoot)/interop/UnityEngine.UI.dll;$(RefRoot)/interop/UnityEngine.UIModule.dll;$(RefRoot)/interop/UnityEngine.PhysicsModule.dll;$(RefRoot)/interop/Unity.TextMeshPro.dll" />
     <Reference Include="@(GameRef)" Private="false" />
   </ItemGroup>
 </Project>
