@@ -13,7 +13,7 @@ public class Plugin : BasePlugin
 {
     // scripts/package.sh reads Version from here.
     public const string Guid = "dodo.moonsweepers.qol";
-    public const string Version = "0.7.0";
+    public const string Version = "1.0.0";
 
     public static Plugin Instance;
     public static ConfigEntry<bool> RequireUpgrade;
