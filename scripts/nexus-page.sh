@@ -1,5 +1,6 @@
 #!/bin/bash
-# Push the Nexus Mods page text from this repo: summary and description. The
+# Push the Nexus Mods page text from this repo: assets/nexus-summary.txt (the short
+# description, 350 characters at most) and assets/nexus-description.bbcode. The
 # release workflow runs it on every tag, so the page is generated from source
 # instead of edited in a web form and then forgotten.
 #
@@ -15,8 +16,6 @@ API=https://api.nexusmods.com/v3
 : "${NEXUSMODS_API_KEY:?set NEXUSMODS_API_KEY}"
 : "${NEXUS_MOD_ID:?set NEXUS_MOD_ID to the unique mod id (page Files tab, Advanced)}"
 
-SUMMARY="Quality-of-life additions for Moon Sweepers, sold as upgrades in the game's own upgrade tree. Starts with the Landmark Scanner, which marks landmark flags and lunar sites you have not raised yet on the compass, the station hologram and the map."
-
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
@@ -31,9 +30,9 @@ call() {
   fi
 }
 
-python3 - "$SUMMARY" "$REPO/assets/nexus-description.bbcode" > "$WORK/body.json" <<'PY'
+python3 - "$REPO/assets/nexus-summary.txt" "$REPO/assets/nexus-description.bbcode" > "$WORK/body.json" <<'PY'
 import json, sys
-print(json.dumps({"summary": sys.argv[1], "description": open(sys.argv[2]).read().strip()}))
+print(json.dumps({"summary": open(sys.argv[1]).read().strip(), "description": open(sys.argv[2]).read().strip()}))
 PY
 
 echo "updating the page text on mod $NEXUS_MOD_ID"

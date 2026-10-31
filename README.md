@@ -45,7 +45,7 @@ git push origin v1.0.0
 ```
 
 That builds the zip on a runner, attaches it to a GitHub release, syncs the Nexus page text
-(`assets/nexus-description.bbcode`) and uploads the zip to Nexus Mods. The tag message becomes
+(`assets/nexus-summary.txt` and `assets/nexus-description.bbcode`) and uploads the zip to Nexus Mods. The tag message becomes
 the changelog. The **Store page** workflow syncs the text alone, without a release. Needs the `NEXUSMODS_API_KEY` secret and the
 `NEXUS_FILE_ID` and `NEXUS_MOD_ID` variables (see [NOTES.md](NOTES.md#nexus)).
 
