@@ -59,6 +59,17 @@ the game's own code. `Upgrades.Register` appends it to `MoonUpgradeTree.Nodes` a
 It has to run when the plugin loads, before the upgrade terminal builds its UI; a node added
 later is not shown.
 
+## Belts and machines
+
+- `MoonWorld.BeltSpeed` is a game constant. Writing it does not throw but crashes the game a few
+  seconds later, so belts are sped up with Harmony instead: a prefix on `StepConveyors` scales `dt`, and a
+  postfix on `BeltSurfaceVelocity` scales the velocity riders are carried at.
+- Machine cycle time and power are plain instance fields on the shared `ProcessorSpec`
+  (`MoonWorld.Processor(kind)`), so they are written once per level change as multiples of the values
+  captured on first use.
+- Touching the world's tuning while `MoonWorld.Initialize` runs crashes the game. `Game.Ready` waits 20 s
+  after the walker appears, and nothing is written at level 0.
+
 ## Nexus
 
 The upload goes through [`Nexus-Mods/upload-action`](https://github.com/Nexus-Mods/upload-action) (v3 API, still in beta).

@@ -9,13 +9,17 @@ Quality-of-life additions for Moon Sweepers as one BepInEx plugin. Everything is
 [/list]
 Raised landmarks are left to the game, which already draws them.
 
+[b]Belt Drive[/b] (Logistics branch, needs Rapid Transfer) speeds up conveyor belts, up to +60%.
+
+[b]Machine Overdrive[/b] (Logistics branch, needs Belt Drive) speeds up stone presses and pressure chambers, up to +75%. They draw proportionally more power, so the energy per product stays the same.
+
 [size=4][b]Installation instructions[/b][/size]
 [list=1]
 [*]Install BepInEx for the game with the MoonSweepers BepInEx Patcher (see Requirements).
 [*]Extract the zip over the Moon Sweepers game folder, so MoonSweepersQol.dll ends up in BepInEx/plugins.
 [*]Launch the game, open the upgrade terminal and buy the Landmark Scanner in the Suit branch.
 [/list]
-Set RequireUpgrade to false in BepInEx/config/dodo.moonsweepers.qol.cfg to have everything on without buying it.
+Set RequireUpgrade to false in BepInEx/config/dodo.moonsweepers.qol.cfg to have everything on without buying it. OverdrivePower in the same file turns off the extra power draw.
 
 [size=4][b]Requirements[/b][/size]
 BepInEx 6 for this game, installed with [url=https://www.nexusmods.com/moonsweepers/mods/9]MoonSweepers BepInEx Patcher[/url].

@@ -15,6 +15,10 @@ sites you have not raised yet:
 
 Raised ones are left to the game, which already draws them.
 
+**Belt Drive** (Logistics, needs Rapid Transfer) speeds up conveyor belts, up to +60%.
+**Machine Overdrive** (Logistics, needs Belt Drive) speeds up stone presses and pressure
+chambers, up to +75%. They draw proportionally more power, so energy per product stays the same.
+
 ## Install
 
 1. Install BepInEx for the game with [MoonSweepers BepInEx Patcher](https://www.nexusmods.com/moonsweepers/mods/9).
@@ -27,7 +31,8 @@ Raised ones are left to the game, which already draws them.
 Close the game first. Set `MS_GAME_DIR` if it is not in the default Steam library.
 
 `BepInEx/config/dodo.moonsweepers.qol.cfg` has `RequireUpgrade`; set it to `false` to
-have everything on without buying it.
+have everything on without buying it. `OverdrivePower` in the same file turns off the extra
+power draw.
 
 ## Releasing
 
