@@ -39,8 +39,9 @@ git tag -a v1.0.0 -m "what changed"   # must match Version in src/Plugin.cs
 git push origin v1.0.0
 ```
 
-That builds the zip on a runner, attaches it to a GitHub release, and uploads it to Nexus
-Mods. The tag message becomes the changelog. Needs the `NEXUSMODS_API_KEY` secret and the
+That builds the zip on a runner, attaches it to a GitHub release, syncs the Nexus page text
+(`assets/nexus-description.bbcode`) and uploads the zip to Nexus Mods. The tag message becomes
+the changelog. The **Store page** workflow syncs the text alone, without a release. Needs the `NEXUSMODS_API_KEY` secret and the
 `NEXUS_FILE_ID` and `NEXUS_MOD_ID` variables (see [NOTES.md](NOTES.md#nexus)).
 
 ## Development

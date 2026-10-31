@@ -1,0 +1,22 @@
+name: Store page
+
+# The Nexus page text on its own, from whatever branch this is run on. The
+# release workflow does the same sync, but only from a tag, and the copy changes
+# far more often than the mod does.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  page:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync the Nexus page
+        env:
+          NEXUSMODS_API_KEY: ${{ secrets.NEXUSMODS_API_KEY }}
+          NEXUS_MOD_ID: ${{ vars.NEXUS_MOD_ID }}
+        run: ./scripts/nexus-page.sh

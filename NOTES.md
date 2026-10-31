@@ -69,3 +69,8 @@ The upload goes through [`Nexus-Mods/upload-action`](https://github.com/Nexus-Mo
    ID as `NEXUS_MOD_ID`.
 
 Until all three exist the workflow skips the upload instead of failing.
+
+The page text comes from `assets/nexus-description.bbcode` and the summary in `scripts/nexus-page.sh`,
+pushed with `PATCH /v3/mods/{id}` on every tag. That endpoint takes the mod's unique id, which the script
+looks up from the page number. The API has no image or tag endpoints, so the header, gallery and tags
+are set by hand; `assets/make-logo.py` draws the image used there.
