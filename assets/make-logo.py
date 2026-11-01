@@ -52,13 +52,16 @@ def lockup(w, h, kicker_y, title_y, title_size, outline, chip_y, chip_h, chip_si
     d = ImageDraw.Draw(img)
     centred(d, w / 2, kicker_y, "MOON SWEEPERS", font(title_size * 0.3, 600), ORANGE)
     centred(d, w / 2, title_y, "Quality of Life", font(title_size, 700), WHITE, outline)
-    chips(d, chip_y, chip_h, chip_size, chip_gap)
+    if chip_y:
+        chips(d, chip_y, chip_h, chip_size, chip_gap)
     return img.resize((w, h), Image.LANCZOS)
 
 
 def main():
     lockup(1280, 720, 258, 355, 150, 8, 495, 64, 30, 18).save(os.path.join(HERE, "logo.png"))
-    lockup(1300, 372, 78, 150, 112, 7, 275, 52, 25, 14).save(os.path.join(HERE, "banner.png"))
+    # Nexus draws the mod title and breadcrumbs over the bottom of the header, so the lettering
+    # stays in the top half and there are no chips here.
+    lockup(1300, 372, 72, 140, 112, 7, None, 0, 0, 0).save(os.path.join(HERE, "banner.png"))
 
 
 main()
