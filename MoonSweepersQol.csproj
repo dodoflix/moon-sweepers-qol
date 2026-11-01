@@ -14,6 +14,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="tools/**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <GameRef Include="$(RefRoot)/core/BepInEx.Core.dll;$(RefRoot)/core/BepInEx.Unity.IL2CPP.dll;$(RefRoot)/core/0Harmony.dll;$(RefRoot)/core/Il2CppInterop.Runtime.dll;$(RefRoot)/core/Il2CppInterop.Common.dll" />
     <GameRef Include="$(RefRoot)/interop/Assembly-CSharp.dll;$(RefRoot)/interop/Il2Cppmscorlib.dll;$(RefRoot)/interop/UnityEngine.dll;$(RefRoot)/interop/UnityEngine.CoreModule.dll;$(RefRoot)/interop/UnityEngine.IMGUIModule.dll;$(RefRoot)/interop/UnityEngine.TextRenderingModule.dll;$(RefRoot)/interop/UnityEngine.UI.dll;$(RefRoot)/interop/UnityEngine.UIModule.dll;$(RefRoot)/interop/UnityEngine.PhysicsModule.dll;$(RefRoot)/interop/Unity.TextMeshPro.dll" />
     <Reference Include="@(GameRef)" Private="false" />

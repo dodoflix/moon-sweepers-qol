@@ -20,6 +20,12 @@ the interop assemblies the plugin uses; the csproj falls back to them when the g
 on `UnityEngine.CoreModule` with "Read out of bounds" unless private members are kept, which `refs.sh` handles.
 Regenerate after a game update that changes a type the plugin uses.
 
+## Finding what the game has
+
+`scripts/members.sh <Type|*> <memberRegex>` prints a type's properties and methods with their types, read from
+`BepInEx/interop` without running the game (`tools/members`). It shows which numbers are writable (`rw`) and what
+a method takes, but not what it does: method bodies are native code, so behaviour has to be measured in game.
+
 ## IL2CPP traps
 
 - `Object.FindObjectOfType` throws `Method unstripping failed`; use `FindFirstObjectByType` and
