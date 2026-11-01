@@ -11,7 +11,7 @@ namespace MoonSweepersQol;
 [BepInPlugin(Guid, "Moon Sweepers QoL", Version)]
 public class Plugin : BasePlugin
 {
-    // scripts/package.sh reads Version from here.
+    // The Package target in MoonSweepersQol.csproj reads Version from here.
     public const string Guid = "dodo.moonsweepers.qol";
     public const string Version = "1.1.1";
 

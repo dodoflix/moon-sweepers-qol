@@ -1,4 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="Game.props" />
+
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>MoonSweepersQol</AssemblyName>
@@ -7,10 +9,10 @@
     <Nullable>disable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <GameDir Condition="'$(GameDir)' == ''">$(HOME)/.local/share/Steam/steamapps/common/Moon Sweepers</GameDir>
     <!-- Your game's generated assemblies when present, else the signature-only copies in refs/ (CI). -->
     <RefRoot Condition="Exists('$(GameDir)/BepInEx/interop')">$(GameDir)/BepInEx</RefRoot>
     <RefRoot Condition="'$(RefRoot)' == ''">$(MSBuildThisFileDirectory)refs</RefRoot>
+    <PluginVersion>$([System.Text.RegularExpressions.Regex]::Match($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)src/Plugin.cs')), 'const string Version = "([^"]+)"').Groups[1].Value)</PluginVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,4 +24,29 @@
     <GameRef Include="$(RefRoot)/interop/Assembly-CSharp.dll;$(RefRoot)/interop/Il2Cppmscorlib.dll;$(RefRoot)/interop/UnityEngine.dll;$(RefRoot)/interop/UnityEngine.CoreModule.dll;$(RefRoot)/interop/UnityEngine.IMGUIModule.dll;$(RefRoot)/interop/UnityEngine.TextRenderingModule.dll;$(RefRoot)/interop/UnityEngine.UI.dll;$(RefRoot)/interop/UnityEngine.UIModule.dll;$(RefRoot)/interop/UnityEngine.PhysicsModule.dll;$(RefRoot)/interop/Unity.TextMeshPro.dll" />
     <Reference Include="@(GameRef)" Private="false" />
   </ItemGroup>
+
+  <!-- dotnet build -t:Install : build and copy the plugin into the game. -->
+  <Target Name="Install" DependsOnTargets="Build">
+    <Error Condition="!Exists('$(GameDir)/BepInEx')" Text="BepInEx not found in $(GameDir). Run the game once with BepInEx and the patcher, or set MS_GAME_DIR." />
+    <MakeDir Directories="$(GameDir)/BepInEx/plugins" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)/BepInEx/plugins" />
+    <Message Importance="high" Text="installed to $(GameDir)/BepInEx/plugins/$(TargetFileName). Launch the game and look for [Moon Sweepers QoL] in BepInEx/LogOutput.log." />
+  </Target>
+
+  <!-- dotnet build -c Release -t:Package [-p:ReleaseTag=v1.2.3] : zip laid out from the game folder, so
+       extracting it over an install puts the DLL in BepInEx/plugins. The tag, when given, has to match Version. -->
+  <Target Name="Package" DependsOnTargets="Build">
+    <Error Condition="'$(PluginVersion)' == ''" Text="No Version constant found in src/Plugin.cs." />
+    <Error Condition="'$(ReleaseTag)' != '' and 'v$(PluginVersion)' != '$(ReleaseTag)'" Text="Tag $(ReleaseTag) does not match Version $(PluginVersion) in src/Plugin.cs." />
+    <PropertyGroup>
+      <StageDir>$(MSBuildProjectDirectory)/$(IntermediateOutputPath)package</StageDir>
+      <ZipFile>$(MSBuildThisFileDirectory)dist/MoonSweepersQol-$(PluginVersion).zip</ZipFile>
+    </PropertyGroup>
+    <RemoveDir Directories="$(StageDir)" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(StageDir)/BepInEx/plugins" />
+    <MakeDir Directories="$(MSBuildThisFileDirectory)dist" />
+    <Delete Files="$(ZipFile)" />
+    <ZipDirectory SourceDirectory="$(StageDir)" DestinationFile="$(ZipFile)" />
+    <Message Importance="high" Text="$(ZipFile)" />
+  </Target>
 </Project>

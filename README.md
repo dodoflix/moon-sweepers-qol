@@ -29,7 +29,7 @@ chambers, up to +250%. They draw proportionally more power, so energy per produc
 2. Extract the release zip over the game folder, or build it yourself:
 
 ```sh
-./scripts/install.sh
+dotnet build -t:Install
 ```
 
 Close the game first. Set `MS_GAME_DIR` if it is not in the default Steam library.
@@ -43,7 +43,7 @@ power draw.
 Tagging is the trigger:
 
 ```sh
-./scripts/check.sh
+dotnet build
 git tag -a v1.0.0 -m "what changed"   # must match Version in src/Plugin.cs
 git push origin v1.0.0
 ```
@@ -55,9 +55,9 @@ the changelog. The **Store page** workflow syncs the text alone, without a relea
 
 ## Development
 
-`scripts/check.sh` compiles against the interop assemblies BepInEx generated from your copy
+`dotnet build` compiles against the interop assemblies BepInEx generated from your copy
 of the game, or against the signature-only copies in `refs/` when there is no game, which is
-how CI builds. Run `scripts/refs.sh` after a game update to refresh them.
+how CI builds. Run `dotnet msbuild tools/refs/refs.proj` after a game update to refresh them.
 
 To add a feature, write a static class beside `Landmarks.cs` and call it from `Qol` in
 `src/Plugin.cs`. Sell it with a node in `src/Upgrades.cs`.

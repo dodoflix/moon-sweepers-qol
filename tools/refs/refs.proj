@@ -1,0 +1,39 @@
+<Project DefaultTargets="Refs">
+  <Import Project="../../Game.props" />
+
+  <!-- Regenerates refs/: signature-only reference assemblies of the BepInEx core libraries and the
+       interop assemblies generated from your copy of the game. CI compiles against these because a
+       runner has no game. Run after a game update that changes the types the plugin uses:
+         dotnet msbuild tools/refs/refs.proj -->
+  <PropertyGroup>
+    <Root>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../..'))</Root>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Lib Include="core/BepInEx.Core.dll;core/BepInEx.Unity.IL2CPP.dll;core/0Harmony.dll;core/Il2CppInterop.Runtime.dll;core/Il2CppInterop.Common.dll" />
+    <Lib Include="interop/Assembly-CSharp.dll;interop/Il2Cppmscorlib.dll;interop/UnityEngine.dll;interop/UnityEngine.CoreModule.dll;interop/UnityEngine.IMGUIModule.dll;interop/UnityEngine.TextRenderingModule.dll;interop/UnityEngine.UI.dll;interop/UnityEngine.UIModule.dll;interop/UnityEngine.PhysicsModule.dll;interop/Unity.TextMeshPro.dll" />
+  </ItemGroup>
+
+  <Target Name="Refs">
+    <Error Condition="!Exists('$(GameDir)/BepInEx/interop')" Text="BepInEx interop not found in $(GameDir) (run the game once with BepInEx and the patcher). Set MS_GAME_DIR to override." />
+    <RemoveDir Directories="$(Root)/refs" />
+    <MakeDir Directories="$(Root)/refs/core;$(Root)/refs/interop" />
+    <Exec Command="dotnet tool restore" WorkingDirectory="$(Root)" />
+    <MSBuild Projects="$(MSBuildProjectFullPath)" Targets="One" Properties="Lib=%(Lib.Identity);GameDir=$(GameDir)" />
+  </Target>
+
+  <!-- Per library, so the fallback sees that library's exit code. Some assemblies (UnityEngine.CoreModule)
+       fail with "Read out of bounds" when private members are dropped. -->
+  <Target Name="One">
+    <PropertyGroup>
+      <Out>$(Root)/refs/$([System.IO.Path]::GetDirectoryName('$(Lib)'))</Out>
+    </PropertyGroup>
+    <Exec Command="dotnet refasmer -q -O &quot;$(Out)&quot; --omit-non-api-members=true &quot;$(GameDir)/BepInEx/$(Lib)&quot;"
+          WorkingDirectory="$(Root)" IgnoreExitCode="true" IgnoreStandardErrorWarningFormat="true" StandardOutputImportance="low">
+      <Output TaskParameter="ExitCode" PropertyName="Exit" />
+    </Exec>
+    <Exec Condition="'$(Exit)' != '0'"
+          Command="dotnet refasmer -q -O &quot;$(Out)&quot; --omit-non-api-members=false &quot;$(GameDir)/BepInEx/$(Lib)&quot;"
+          WorkingDirectory="$(Root)" />
+  </Target>
+</Project>

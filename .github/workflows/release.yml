@@ -52,15 +52,10 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       # A runner has no copy of the game, so this compiles against the signature-only
-      # assemblies in refs/. scripts/refs.sh regenerates them.
+      # assemblies in refs/. tools/refs/refs.proj regenerates them. The Package target fails when the tag
+      # does not match Version in src/Plugin.cs.
       - name: Package
-        run: |
-          PLUGIN="$(sed -n 's/.*const string Version = "\(.*\)";/\1/p' src/Plugin.cs)"
-          if [ "$PLUGIN" != "${{ steps.tag.outputs.version }}" ]; then
-            echo "Tag ${{ steps.tag.outputs.tag }} does not match Version $PLUGIN in src/Plugin.cs." >&2
-            exit 1
-          fi
-          ./scripts/package.sh
+        run: dotnet build -c Release -t:Package -p:ReleaseTag="${{ steps.tag.outputs.tag }}" --nologo
 
       - name: GitHub release
         env:

@@ -10,20 +10,20 @@ How the mod works, and what it cost to find out. The README is the short version
   the live runtime and generates `BepInEx/interop/*.dll`. Swapping parser libraries by hand did not work.
 - Under Proton the doorstop `winhttp.dll` proxy only loads with a Wine DLL override
   (`winhttp=native,builtin`), set either as a Steam launch option or in the prefix `user.reg`.
-- `scripts/refs.sh` and a local `check.sh` build need `BepInEx/interop`, so the game has to have run once with the patcher.
+- `tools/refs/refs.proj` and a local `dotnet build` need `BepInEx/interop`, so the game has to have run once with the patcher.
 
 ## CI builds from refs/
 
 A runner has no game, and the interop assemblies are generated from the player's own copy, so they cannot
 be fetched. `refs/` holds signature-only copies (made with JetBrains Refasmer) of the BepInEx core libraries and
 the interop assemblies the plugin uses; the csproj falls back to them when the game is not there. Refasmer fails
-on `UnityEngine.CoreModule` with "Read out of bounds" unless private members are kept, which `refs.sh` handles.
+on `UnityEngine.CoreModule` with "Read out of bounds" unless private members are kept, which `refs.proj` handles.
 Regenerate after a game update that changes a type the plugin uses.
 
 ## Finding what the game has
 
-`scripts/members.sh <Type|*> <memberRegex>` prints a type's properties and methods with their types, read from
-`BepInEx/interop` without running the game (`tools/members`). It shows which numbers are writable (`rw`) and what
+`dotnet run --project tools/members -- <Type|*> <memberRegex>` prints a type's properties and methods with their
+types, read from `BepInEx/interop` without running the game. It shows which numbers are writable (`rw`) and what
 a method takes, but not what it does: method bodies are native code, so behaviour has to be measured in game.
 
 ## IL2CPP traps
@@ -103,7 +103,8 @@ The upload goes through [`Nexus-Mods/upload-action`](https://github.com/Nexus-Mo
 Until all three exist the workflow skips the upload instead of failing.
 
 The page text comes from `assets/nexus-description.bbcode` and `assets/nexus-summary.txt`,
-pushed with `PATCH /v3/mods/{id}` on every tag. The API has no image or tag endpoints (POST to
+pushed with `PATCH /v3/mods/{id}` on every tag by `scripts/nexus-page.sh` (bash and curl, only run by the
+workflows on the Ubuntu runner, not part of a local build). The API has no image or tag endpoints (POST to
 `/mods/{id}/images`, `/media`, `/gallery` and `/header` all 404, where `/changelogs` answers 422), so the header,
 gallery and tags are set by hand. `assets/make-logo.py` draws both images: `logo.png` for the thumbnail and
 gallery, `banner.png` for the header.

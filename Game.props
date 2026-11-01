@@ -1,0 +1,8 @@
+<Project>
+  <!-- Where the game is installed: MS_GAME_DIR, else the default Steam library for the OS. -->
+  <PropertyGroup>
+    <GameDir Condition="'$(GameDir)' == '' and '$(MS_GAME_DIR)' != ''">$(MS_GAME_DIR)</GameDir>
+    <GameDir Condition="'$(GameDir)' == '' and $([MSBuild]::IsOSPlatform('Windows'))">$(MSBuildProgramFiles32)\Steam\steamapps\common\Moon Sweepers</GameDir>
+    <GameDir Condition="'$(GameDir)' == ''">$(HOME)/.local/share/Steam/steamapps/common/Moon Sweepers</GameDir>
+  </PropertyGroup>
+</Project>
