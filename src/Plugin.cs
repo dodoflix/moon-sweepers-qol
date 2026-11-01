@@ -26,6 +26,7 @@ public class Plugin : BasePlugin
             "Features that are sold as upgrades only work once bought. Set to false to have them always on.");
         OverdrivePower = Config.Bind("Machines", "OverdrivePower", true,
             "Machines sped up by Machine Overdrive draw proportionally more power. Set to false to keep their power draw.");
+        Harmony.CreateAndPatchAll(typeof(StepProductionDtPatch));
         Harmony.CreateAndPatchAll(typeof(FlagUnderPatch));
         Harmony.CreateAndPatchAll(typeof(ShowInfoPatch));
         Harmony.CreateAndPatchAll(typeof(RobotDrivePatch));

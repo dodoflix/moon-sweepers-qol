@@ -8,8 +8,8 @@ namespace MoonSweepersQol;
 static class Machines
 {
     // Speed multiplier per level, index 0 is not bought.
-    public static readonly float[] BeltBoost = { 1f, 1.3f, 1.6f };
-    public static readonly float[] MachineBoost = { 1f, 1.25f, 1.5f, 1.75f };
+    public static readonly float[] BeltBoost = { 1f, 2f, 3f, 4f, 5f, 6f };
+    public static readonly float[] MachineBoost = { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f };
 
     static bool captured;
     static readonly float[] baseCycle = new float[2], baseKw = new float[2];
@@ -49,10 +49,29 @@ static class Machines
     }
 }
 
+// StepConveyors hands its dt on to StepProduction, so scaling it would run machines faster too:
+// production gets the real dt back. Power and the off-screen robots take their own dt.
 [HarmonyPatch(typeof(MoonWorld), nameof(MoonWorld.StepConveyors))]
 static class StepConveyorsPatch
 {
-    static void Prefix(ref float dt) => dt *= Machines.BeltFactor;
+    static float scale = 1f;
+
+    static void Prefix(ref float dt)
+    {
+        scale = Machines.BeltFactor;
+        dt *= scale;
+    }
+
+    static void Postfix() => scale = 1f;
+
+    public static void Restore(ref float dt) => dt /= scale;
+}
+
+[HarmonyPatch(typeof(MoonWorld), nameof(MoonWorld.StepProduction))]
+static class StepProductionDtPatch
+{
+    [HarmonyPriority(Priority.First)]
+    static void Prefix(ref float dt) => StepConveyorsPatch.Restore(ref dt);
 }
 
 // Riders on a belt are carried at the same speed as the capsules.

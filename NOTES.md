@@ -64,6 +64,9 @@ later is not shown.
 - `MoonWorld.BeltSpeed` is a game constant. Writing it does not throw but crashes the game a few
   seconds later, so belts are sped up with Harmony instead: a prefix on `StepConveyors` scales `dt`, and a
   postfix on `BeltSurfaceVelocity` scales the velocity riders are carried at.
+- `StepConveyors(dt)` passes its `dt` on to `StepProduction`, so scaling it alone sped machine cycles up by
+  the belt factor too. A prefix on `StepProduction` divides the scale back out. `SolvePower` and the far-robot
+  step take their own `dt` and must not be touched: dividing them slowed power by the belt factor.
 - Machine cycle time and power are plain instance fields on the shared `ProcessorSpec`
   (`MoonWorld.Processor(kind)`), so they are written once per level change as multiples of the values
   captured on first use.
