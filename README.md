@@ -1,3 +1,5 @@
+![Moon Sweepers QoL](assets/logo.png)
+
 # Moon Sweepers QoL
 
 Quality-of-life additions for Moon Sweepers, as one BepInEx plugin. Everything is sold
@@ -17,10 +19,13 @@ Raised ones are left to the game, which already draws them.
 
 **Belt Drive** (Logistics, needs Rapid Transfer) speeds up conveyor belts, up to +500%, so
 they keep fast machines fed.
+
 **Machine Overdrive** (Logistics, needs Belt Drive) speeds up stone presses and pressure
 chambers, up to +250%. They draw proportionally more power, so energy per product stays the same.
+
 **Robot Drive** (Cleaning, needs Long Reach) makes robot vacuums travel and clean faster, up to
 +60%, on and off screen.
+
 **Robot Heads** (Cleaning, needs Robot Drive) widens what they cover, up to +45%.
 
 ## Install
@@ -38,31 +43,10 @@ Close the game first. Set `MS_GAME_DIR` if it is not in the default Steam librar
 have everything on without buying it. `OverdrivePower` in the same file turns off the extra
 power draw.
 
-## Releasing
+## Docs
 
-Tagging is the trigger:
-
-```sh
-dotnet build
-git tag -a v1.0.0 -m "what changed"   # must match Version in src/Plugin.cs
-git push origin v1.0.0
-```
-
-That builds the zip on a runner, attaches it to a GitHub release, syncs the Nexus page text
-(`assets/nexus-summary.txt` and `assets/nexus-description.bbcode`) and uploads the zip to Nexus Mods. The tag message becomes
-the changelog. The **Store page** workflow syncs the text alone, without a release. Needs the `NEXUSMODS_API_KEY` secret and the
-`NEXUS_FILE_ID` and `NEXUS_MOD_ID` variables (see [NOTES.md](NOTES.md#nexus)).
-
-## Development
-
-`dotnet build` compiles against the interop assemblies BepInEx generated from your copy
-of the game, or against the signature-only copies in `refs/` when there is no game, which is
-how CI builds. Run `dotnet msbuild tools/refs/refs.proj` after a game update to refresh them.
-
-To add a feature, write a static class beside `Landmarks.cs` and call it from `Qol` in
-`src/Plugin.cs`. Sell it with a node in `src/Upgrades.cs`.
-
-[NOTES.md](NOTES.md) is the long version: how it works and the traps that cost a day each.
+- [Development and releasing](docs/development.md)
+- [NOTES.md](NOTES.md): how it works and the traps that cost a day each.
 
 ## License
 
