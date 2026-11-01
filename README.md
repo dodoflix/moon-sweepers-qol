@@ -51,3 +51,6 @@ power draw.
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+`assets/fonts/` is [Fredoka](https://github.com/hafontia/Fredoka-One) under the SIL Open Font
+License, not MIT; its licence sits beside it.
